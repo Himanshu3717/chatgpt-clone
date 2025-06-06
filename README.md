@@ -1,20 +1,20 @@
 # ChatGPT Clone
 
-A modern ChatGPT clone built with Next.js, Auth0, Google AI, and Supabase.
+A modern ChatGPT clone built with Next.js, Auth0, and Google's Generative AI.
 
 ## Features
 
-- User authentication with Auth0
-- Real-time chat interface
-- Powered by Google's Generative AI
-- Chat history storage with Supabase
-- Modern UI with Bootstrap
+- 🔐 Authentication with Auth0
+- 🤖 AI-powered chat using Google's Generative AI
+- 💅 Modern UI with Bootstrap
+- ⚡ Real-time responses
+- 🔒 Secure API key handling
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/chatgpt-clone.git
+git clone https://github.com/Himanshu3717/chatgpt-clone.git
 cd chatgpt-clone
 ```
 
@@ -23,39 +23,30 @@ cd chatgpt-clone
 npm install
 ```
 
-3. Set up environment variables:
-Create a `.env.local` file with the following variables:
+3. Create a `.env.local` file with the following variables:
 ```
 AUTH0_SECRET='use [openssl rand -hex 32] to generate a 32 bytes value'
 AUTH0_BASE_URL='http://localhost:3000'
-AUTH0_ISSUER_BASE_URL='https://your-tenant.auth0.com'
-AUTH0_CLIENT_ID='your-client-id'
-AUTH0_CLIENT_SECRET='your-client-secret'
-GOOGLE_API_KEY='your-google-api-key'
-NEXT_PUBLIC_SUPABASE_URL='your-supabase-url'
-NEXT_PUBLIC_SUPABASE_ANON_KEY='your-supabase-anon-key'
+AUTH0_ISSUER_BASE_URL='https://YOUR_AUTH0_DOMAIN'
+AUTH0_CLIENT_ID='YOUR_AUTH0_CLIENT_ID'
+AUTH0_CLIENT_SECRET='YOUR_AUTH0_CLIENT_SECRET'
+GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 ```
 
-4. Set up Supabase:
-- Create a new Supabase project
-- Run the SQL commands in the SQL editor to create the necessary tables
-- Enable Row Level Security and create the required policies
-
-5. Run the development server:
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Tech Stack
 
 - Next.js 14
 - Auth0 for authentication
 - Google Generative AI
-- Supabase for database
 - Bootstrap for styling
-- TypeScript for type safety
+- TypeScript
 
 ## License
 
