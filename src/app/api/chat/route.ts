@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@auth0/nextjs-auth0';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// Initialize Google AI with environment variable
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
 
 export async function POST(req: Request) {
   try {
@@ -18,21 +14,35 @@ export async function POST(req: Request) {
     }
 
     try {
-      // Get the model
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: message
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
 
-      // Generate response
-      const result = await model.generateContent({
-        contents: [{
-          role: 'user',
-          parts: [{
-            text: message
-          }]
-        }]
-      });
-      
-      const response = await result.response;
-      const text = response.text();
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        throw new Error('Failed to generate response');
+      }
+
+      const data = await response.json();
+      const text = data.candidates[0].content.parts[0].text;
 
       return NextResponse.json({ response: text });
     } catch (aiError) {

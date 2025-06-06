@@ -14,7 +14,7 @@ export const chatRouter = createTRPCRouter({
       })),
     }))
     .mutation(async ({ input }) => {
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
       
       const chat = model.startChat({
         history: input.history.map(msg => ({
@@ -38,7 +38,7 @@ export const chatRouter = createTRPCRouter({
       prompt: z.string(),
     }))
     .mutation(async ({ input }) => {
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.0-pro-vision' });
       
       const result = await model.generateContent(input.prompt);
       const response = await result.response;
