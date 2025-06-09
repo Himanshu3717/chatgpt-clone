@@ -2,9 +2,9 @@ import { supabase } from './supabase';
 
 export async function syncUser(auth0User: {
   sub: string;
-  email: string;
-  name: string;
-  picture: string;
+  email?: string;
+  name?: string;
+  picture?: string;
 }) {
   // First, try to get the existing user
   const { data: existingUser, error: fetchError } = await supabase
@@ -26,9 +26,9 @@ export async function syncUser(auth0User: {
     .from('users')
     .insert({
       auth0_id: auth0User.sub,
-      email: auth0User.email,
-      name: auth0User.name,
-      picture: auth0User.picture,
+      email: auth0User.email || '',
+      name: auth0User.name || '',
+      picture: auth0User.picture || '',
     })
     .select('id')
     .single();

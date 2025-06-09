@@ -4,6 +4,13 @@ import { syncUser } from '@/lib/syncUser';
 import { createChatSession } from '@/lib/createOrGetChatSession';
 import { saveMessage } from '@/lib/saveMessage';
 
+interface Auth0UserProfile {
+  sub: string;
+  email?: string;
+  name?: string;
+  picture?: string;
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getSession();
@@ -16,8 +23,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
+    // Explicitly construct user object to match syncUser expected type
+    const userProfile: Auth0UserProfile = {
+      sub: session.user.sub,
+      email: session.user.email || '',
+      name: session.user.name || '',
+      picture: session.user.picture || '',
+    };
+
     // Sync user with Supabase
-    const user = await syncUser(session.user);
+    const user = await syncUser(userProfile);
 
     // Create or get chat session
     let chatSessionId = sessionId;
