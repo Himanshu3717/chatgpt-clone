@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@auth0/nextjs-auth0';
+import { syncUser } from '@/lib/syncUser';
+import { createChatSession } from '@/lib/createOrGetChatSession';
+import { saveMessage } from '@/lib/saveMessage';
 
 export async function POST(req: Request) {
   try {
@@ -8,10 +11,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { message } = await req.json();
+    const { message, sessionId } = await req.json();
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
+
+    // Sync user with Supabase
+    const user = await syncUser(session.user);
+
+    // Create or get chat session
+    let chatSessionId = sessionId;
+    if (!chatSessionId) {
+      const newSession = await createChatSession(user.id);
+      chatSessionId = newSession.id;
+    }
+
+    // Save user message
+    await saveMessage(chatSessionId, 'user', message);
 
     try {
       const response = await fetch(
@@ -44,7 +60,13 @@ export async function POST(req: Request) {
       const data = await response.json();
       const text = data.candidates[0].content.parts[0].text;
 
-      return NextResponse.json({ response: text });
+      // Save assistant response
+      await saveMessage(chatSessionId, 'assistant', text);
+
+      return NextResponse.json({ 
+        response: text,
+        sessionId: chatSessionId
+      });
     } catch (aiError) {
       console.error('AI service error:', aiError);
       return NextResponse.json({ error: 'Failed to generate response' }, { status: 500 });
